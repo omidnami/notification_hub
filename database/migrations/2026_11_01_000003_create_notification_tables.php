@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('status', 16)->default('pending');
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamp('read_at')->nullable();
+            $table->softDeletes(); // API deletes are soft; preserve delivery history.
             $table->string('idempotency_key', 128)->nullable();
             $table->timestamps();
 
