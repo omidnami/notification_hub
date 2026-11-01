@@ -14,6 +14,10 @@ use App\Http\Controllers\EmailProjectKeysController;
 use App\Http\Middleware\AuthenticateEmailProject;
 use App\Http\Middleware\VerifyMailGateway;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PushSubscriptionController;
+use App\Http\Controllers\PushApiController;
+use App\Http\Controllers\PushGatewayController;
+use App\Http\Middleware\VerifyPushGateway;
 
 Route::get('/', function () {
     return view('welcome');
@@ -79,3 +83,25 @@ Route::middleware(['auth', 'throttle:20,1'])->prefix('api/v1/email/projects/{pro
     Route::post('/', [EmailProjectKeysController::class, 'store']);
     Route::delete('/{key}', [EmailProjectKeysController::class, 'destroy']);
 });
+
+
+Route::middleware(['auth', 'throttle:30,1'])->group(function (): void {
+    Route::view('/settings/notifications', 'push-settings')->name('push.settings');
+
+    Route::prefix('api/v1/push')->group(function (): void {
+        Route::get('/config', [PushSubscriptionController::class, 'configuration']);
+        Route::get('/devices', [PushSubscriptionController::class, 'index']);
+        Route::post('/devices', [PushSubscriptionController::class, 'store']);
+        Route::delete('/devices/{id}', [PushSubscriptionController::class, 'destroy']);
+        Route::post('/test', [PushSubscriptionController::class, 'test'])->middleware('throttle:3,1');
+    });
+});
+
+Route::middleware([AuthenticateEmailProject::class, 'throttle:60,1'])
+    ->prefix('api/v1/push/notifications')->group(function (): void {
+        Route::post('/', [PushApiController::class, 'store']);
+        Route::get('/{id}', [PushApiController::class, 'show']);
+    });
+
+Route::post('/internal/web-push', PushGatewayController::class)
+    ->middleware([VerifyPushGateway::class, 'throttle:120,1']);

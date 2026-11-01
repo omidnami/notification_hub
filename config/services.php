@@ -39,4 +39,13 @@ return [
         'user_daily_limit' => (int) env('EMAIL_USER_DAILY_LIMIT', 50),
         'project_daily_limit' => (int) env('EMAIL_PROJECT_DAILY_LIMIT', 30),
     ],
+    'webpush' => [
+        'subject' => env('WEBPUSH_VAPID_SUBJECT'),
+        'public_key' => env('WEBPUSH_VAPID_PUBLIC_KEY'),
+        'private_key' => env('WEBPUSH_VAPID_PRIVATE_KEY'),
+        'use_gateway' => (bool) env('WEBPUSH_USE_GATEWAY', false),
+        'gateway_enabled' => (bool) env('WEBPUSH_GATEWAY_ENABLED', false),
+        'gateway_url' => env('WEBPUSH_GATEWAY_URL'),
+        'gateway_secret' => env('WEBPUSH_GATEWAY_SECRET'),
+    ],
 ];
