@@ -29,4 +29,14 @@ return [
         'app_url' => env('EITAA_APP_URL'),
         'message_budget' => (int) env('EITAA_MESSAGE_BUDGET', 50000),
     ],
+    'email_gateway' => [
+        'enabled' => (bool) env('EMAIL_GATEWAY_ENABLED', false),
+        'url' => env('EMAIL_GATEWAY_URL'),
+        'secret' => env('EMAIL_GATEWAY_SECRET'),
+        'google_client_id' => env('GMAIL_OAUTH_CLIENT_ID'),
+        'google_client_secret' => env('GMAIL_OAUTH_CLIENT_SECRET'),
+        'google_redirect_uri' => env('GMAIL_OAUTH_REDIRECT_URI'),
+        'user_daily_limit' => (int) env('EMAIL_USER_DAILY_LIMIT', 50),
+        'project_daily_limit' => (int) env('EMAIL_PROJECT_DAILY_LIMIT', 30),
+    ],
 ];
