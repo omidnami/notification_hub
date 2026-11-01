@@ -24,4 +24,9 @@ return [
         'username' => env('RUBIKA_BOT_USERNAME'),
         'webhook_secret' => env('RUBIKA_WEBHOOK_SECRET'),
     ],
+    'eitaa' => [
+        'token' => env('EITAA_APP_TOKEN'),
+        'app_url' => env('EITAA_APP_URL'),
+        'message_budget' => (int) env('EITAA_MESSAGE_BUDGET', 50000),
+    ],
 ];

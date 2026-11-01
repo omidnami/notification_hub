@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->validateCsrfTokens(except: ['hooks/bale/*', 'hooks/rubika/*']);
+        $middleware->validateCsrfTokens(except: ['hooks/bale/*', 'hooks/rubika/*', 'api/v1/channels/eitaa/complete']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

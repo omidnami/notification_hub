@@ -4,6 +4,7 @@ use App\Http\Controllers\BaleConnectionController;
 use App\Http\Controllers\BaleWebhookController;
 use App\Http\Controllers\RubikaConnectionController;
 use App\Http\Controllers\RubikaWebhookController;
+use App\Http\Controllers\EitaaConnectionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,3 +32,13 @@ Route::post('/hooks/rubika/{secret}', RubikaWebhookController::class)
     ->middleware('throttle:300,1')
     ->where('secret', '[A-Za-z0-9_-]{32,128}')
     ->name('rubika.webhook');
+
+Route::middleware(['auth', 'throttle:10,1'])->prefix('api/v1/channels/eitaa')->group(function (): void {
+    Route::get('/connection', [EitaaConnectionController::class, 'show']);
+    Route::post('/connect', [EitaaConnectionController::class, 'connect']);
+    Route::delete('/connection', [EitaaConnectionController::class, 'disconnect']);
+});
+
+// Authenticated by signed Eitaa initData and a short-lived one-time pairing code.
+Route::post('/api/v1/channels/eitaa/complete', [EitaaConnectionController::class, 'complete'])
+    ->middleware('throttle:10,1');
