@@ -48,4 +48,11 @@ return [
         'gateway_url' => env('WEBPUSH_GATEWAY_URL'),
         'gateway_secret' => env('WEBPUSH_GATEWAY_SECRET'),
     ],
+    'ippanel' => [
+        'key' => env('IPPANEL_API_KEY'),
+        'from_number' => env('IPPANEL_FROM_NUMBER'),
+        'project_daily_limit' => (int) env('IPPANEL_PROJECT_DAILY_LIMIT', 100),
+        'user_daily_limit' => (int) env('IPPANEL_USER_DAILY_LIMIT', 300),
+        'recipient_hourly_limit' => (int) env('IPPANEL_RECIPIENT_HOURLY_LIMIT', 5),
+    ],
 ];

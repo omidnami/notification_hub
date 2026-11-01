@@ -18,6 +18,10 @@ use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\PushApiController;
 use App\Http\Controllers\PushGatewayController;
 use App\Http\Middleware\VerifyPushGateway;
+use App\Http\Controllers\NotificationApiController;
+use App\Http\Controllers\InboxController;
+use App\Http\Controllers\OutgoingWebhookController;
+use App\Http\Controllers\IppanelCreditController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -105,3 +109,37 @@ Route::middleware([AuthenticateEmailProject::class, 'throttle:60,1'])
 
 Route::post('/internal/web-push', PushGatewayController::class)
     ->middleware([VerifyPushGateway::class, 'throttle:120,1']);
+
+
+// All external notification CRUD uses project-scoped bearer keys.
+Route::middleware([AuthenticateEmailProject::class, 'throttle:60,1'])
+    ->prefix('api/v1/notifications')->group(function (): void {
+        Route::get('/', [NotificationApiController::class, 'index']);
+        Route::post('/', [NotificationApiController::class, 'store']);
+        Route::get('/{id}', [NotificationApiController::class, 'show']);
+        Route::patch('/{id}', [NotificationApiController::class, 'update']);
+        Route::patch('/{id}/read', [NotificationApiController::class, 'read']);
+        Route::delete('/{id}', [NotificationApiController::class, 'destroy']);
+    });
+
+// User inbox and webhook management are session-authenticated; CSRF remains enabled.
+Route::middleware(['auth', 'throttle:60,1'])->group(function (): void {
+    Route::view('/notifications', 'notification-inbox')->name('notifications.index');
+    Route::get('/api/v1/inbox', [InboxController::class, 'index']);
+    Route::get('/api/v1/inbox/stream', [InboxController::class, 'stream'])
+        ->middleware('throttle:12,1');
+    Route::get('/api/v1/inbox/{id}', [InboxController::class, 'show']);
+    Route::patch('/api/v1/inbox/{id}/read', [InboxController::class, 'read']);
+    Route::delete('/api/v1/inbox/{id}', [InboxController::class, 'destroy']);
+
+    Route::get('/api/v1/webhooks', [OutgoingWebhookController::class, 'index']);
+    Route::post('/api/v1/webhooks', [OutgoingWebhookController::class, 'store']);
+    Route::patch('/api/v1/webhooks/{id}', [OutgoingWebhookController::class, 'update']);
+    Route::delete('/api/v1/webhooks/{id}', [OutgoingWebhookController::class, 'destroy']);
+    Route::post('/api/v1/webhooks/{id}/test', [OutgoingWebhookController::class, 'test'])
+        ->middleware('throttle:5,1');
+    Route::get('/api/v1/webhooks/{id}/deliveries', [OutgoingWebhookController::class, 'deliveries']);
+
+    Route::get('/api/v1/admin/ippanel/credit', IppanelCreditController::class)
+        ->middleware('throttle:5,1');
+});
