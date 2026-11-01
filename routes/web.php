@@ -22,6 +22,11 @@ use App\Http\Controllers\NotificationApiController;
 use App\Http\Controllers\InboxController;
 use App\Http\Controllers\OutgoingWebhookController;
 use App\Http\Controllers\IppanelCreditController;
+use App\Http\Controllers\TelegramConnectionController;
+use App\Http\Controllers\TelegramWebhookController;
+use App\Http\Controllers\TelegramCoreEventsController;
+use App\Http\Controllers\TelegramSendGatewayController;
+use App\Http\Middleware\VerifyTelegramInternal;
 
 Route::get('/', function () {
     return view('welcome');
@@ -143,3 +148,24 @@ Route::middleware(['auth', 'throttle:60,1'])->group(function (): void {
     Route::get('/api/v1/admin/ippanel/credit', IppanelCreditController::class)
         ->middleware('throttle:5,1');
 });
+
+
+// Iran: user-owned Telegram connection, protected by the normal web session and CSRF.
+Route::middleware(['auth', 'throttle:10,1'])
+    ->prefix('api/v1/channels/telegram')->group(function (): void {
+        Route::get('/connection', [TelegramConnectionController::class, 'show']);
+        Route::post('/connect', [TelegramConnectionController::class, 'connect']);
+        Route::delete('/connection', [TelegramConnectionController::class, 'disconnect']);
+    });
+
+// Germany: the only public webhook registered with Telegram Bot API.
+Route::post('/hooks/telegram', TelegramWebhookController::class)
+    ->middleware('throttle:300,1')->name('telegram.webhook');
+
+// Germany: accepts only authenticated, limited text-send commands from Iran.
+Route::post('/internal/telegram/send', TelegramSendGatewayController::class)
+    ->middleware([VerifyTelegramInternal::class.':worker', 'throttle:1800,1']);
+
+// Iran: accepts only authenticated Telegram events forwarded by Germany.
+Route::post('/internal/telegram/events', TelegramCoreEventsController::class)
+    ->middleware([VerifyTelegramInternal::class.':core', 'throttle:300,1']);

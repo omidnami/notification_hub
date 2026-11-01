@@ -58,7 +58,7 @@ class NotificationApiController extends Controller
             'scheduled_at' => ['nullable', 'date', 'after:now'],
             'channels' => ['sometimes', 'array', 'min:1', 'max:8'],
             'channels.*' => ['required', 'string', 'distinct',
-                'in:in_app,bale,rubika,eitaa,webpush,sms,voice_otp'],
+                'in:in_app,bale,rubika,eitaa,telegram,webpush,sms,voice_otp'],
             'sms' => ['nullable', 'array'],
             'sms.type' => ['nullable', 'string', 'in:text,pattern'],
             'sms.to' => ['nullable', 'string', 'max:16'],

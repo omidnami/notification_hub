@@ -55,4 +55,17 @@ return [
         'user_daily_limit' => (int) env('IPPANEL_USER_DAILY_LIMIT', 300),
         'recipient_hourly_limit' => (int) env('IPPANEL_RECIPIENT_HOURLY_LIMIT', 5),
     ],
+    'telegram' => [
+        // core: Iran with DB; worker: Germany with Bot API; otherwise disabled.
+        'role' => env('TELEGRAM_ROLE', 'disabled'),
+        'username' => env('TELEGRAM_BOT_USERNAME'),
+        'token' => env('TELEGRAM_BOT_TOKEN'),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+        'webhook_url' => env('TELEGRAM_WEBHOOK_URL'),
+        'gateway_secret' => env('TELEGRAM_GATEWAY_SECRET'),
+        'gateway_url' => env('TELEGRAM_GATEWAY_URL'),
+        'core_url' => env('TELEGRAM_CORE_URL'),
+        'user_daily_limit' => (int) env('TELEGRAM_USER_DAILY_LIMIT', 300),
+        'project_daily_limit' => (int) env('TELEGRAM_PROJECT_DAILY_LIMIT', 150),
+    ],
 ];

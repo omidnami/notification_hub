@@ -7,6 +7,7 @@ use App\Services\BaleService;
 use App\Services\EitaaService;
 use App\Services\Push\PushDispatchService;
 use App\Services\RubikaService;
+use App\Services\Telegram\TelegramService;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -17,6 +18,7 @@ class NotificationCore
         private readonly NotificationEvents $events,
         private readonly BaleService $bale,
         private readonly RubikaService $rubika,
+        private readonly TelegramService $telegram,
         private readonly EitaaService $eitaa,
         private readonly PushDispatchService $push,
     ) {}
@@ -183,6 +185,7 @@ class NotificationCore
         $providers = [
             'bale' => $this->bale,
             'rubika' => $this->rubika,
+            'telegram' => $this->telegram,
             'eitaa' => $this->eitaa,
         ];
 
