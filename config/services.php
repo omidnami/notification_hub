@@ -19,4 +19,9 @@ return [
         'username' => env('BALE_BOT_USERNAME'),
         'webhook_secret' => env('BALE_WEBHOOK_SECRET'),
     ],
+    'rubika' => [
+        'token' => env('RUBIKA_BOT_TOKEN'),
+        'username' => env('RUBIKA_BOT_USERNAME'),
+        'webhook_secret' => env('RUBIKA_WEBHOOK_SECRET'),
+    ],
 ];
